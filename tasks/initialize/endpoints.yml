@@ -1,0 +1,26 @@
+---
+- name:         Get list of Cinder endpoints.
+  register:     openstack_cinder_endpoints
+  changed_when: no
+  command:      openstack endpoint list -f value -c Interface --service volume
+
+- name:    Create Cinder endpoints.
+  command: 'openstack endpoint create --region {{ region }} volume {{ item.key }} {{ item.value }}'
+  when:    '"{{ item.key }}" not in openstack_cinder_endpoints.stdout'
+  with_dict:
+    public:   http://controller:8776/v1/%(tenant_id)s
+    internal: http://controller:8776/v1/%(tenant_id)s
+    admin:    http://controller:8776/v1/%(tenant_id)s
+
+- name:         Get list of CinderV2 endpoints.
+  register:     openstack_cinderv2_endpoints
+  changed_when: no
+  command:      openstack endpoint list -f value -c Interface --service volumev2
+
+- name:    Create CinderV2 endpoints.
+  command: 'openstack endpoint create --region {{ region }} volumev2 {{ item.key }} {{ item.value }}'
+  when:    '"{{ item.key }}" not in openstack_cinderv2_endpoints.stdout'
+  with_dict:
+    public:   http://controller:8776/v2/%(tenant_id)s
+    internal: http://controller:8776/v2/%(tenant_id)s
+    admin:    http://controller:8776/v2/%(tenant_id)s

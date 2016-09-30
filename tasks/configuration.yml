@@ -1,0 +1,63 @@
+---
+- name: Configure DB access.
+  ini_file:
+    dest:    /etc/cinder/cinder.conf
+    section: database
+    option:  connection
+    value:   'mysql+pymysql://cinder:{{ mysql_password }}@{{ mysql_host }}/cinder'
+
+- name: Use RabbitMQ.
+  ini_file:
+    dest:    /etc/cinder/cinder.conf
+    section: DEFAULT
+    option:  rpc_backend
+    value:   rabbit
+
+- name: Configure RabbitMQ access.
+  ini_file:
+    dest:    /etc/cinder/cinder.conf
+    section: oslo_messaging_rabbit
+    option:  '{{ item.key }}'
+    value:   '{{ item.value }}'
+  with_dict:
+    rabbit_host:     '{{ rabbitmq_host }}'
+    rabbit_userid:   '{{ rabbitmq_user }}'
+    rabbit_password: '{{ rabbitmq_password }}'
+
+- name: Use Keystone.
+  ini_file:
+    dest:    /etc/cinder/cinder.conf
+    section: DEFAULT
+    option:  auth_strategy
+    value:   keystone
+
+- name: Configure Keystone access.
+  ini_file:
+    dest:    /etc/cinder/cinder.conf
+    section: keystone_authtoken
+    option:  '{{ item.key }}'
+    value:   '{{ item.value }}'
+  with_dict:
+    auth_uri:            'http://{{ keystone_host }}:5000'
+    auth_url:            'http://{{ keystone_host }}:35357'
+    memcached_servers:   '{{ keystone_host }}:11211'
+    auth_type:           password
+    project_domain_name: default
+    user_domain_name:    default
+    project_name:        service
+    username:            cinder
+    password:            '{{ keystone_password }}'
+
+- name: Configure management interface IP.
+  ini_file:
+    dest:    /etc/cinder/cinder.conf
+    section: DEFAULT
+    option:  my_ip
+    value:   '{{ ip_address }}'
+
+- name: Configure lock path.
+  ini_file:
+    dest:    /etc/cinder/cinder.conf
+    section: oslo_concurrency
+    option:  lock_path
+    value:   /var/lib/cinder/tmp

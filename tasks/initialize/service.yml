@@ -1,0 +1,13 @@
+---
+- name:         Get list of services.
+  register:     openstack_services
+  changed_when: no
+  command:      openstack service list -f value -c Type
+
+- name:    Create Cinder service.
+  command: openstack service create --name cinder --description "OpenStack Block Storage" volume
+  when:    '"volume" not in openstack_services.stdout'
+
+- name:    Create CinderV2 service.
+  command: openstack service create --name cinderv2 --description "OpenStack Block Storage" volumev2
+  when:    '"volumev2" not in openstack_services.stdout'

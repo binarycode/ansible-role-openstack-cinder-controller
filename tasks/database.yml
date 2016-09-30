@@ -1,0 +1,23 @@
+---
+- name: Create Cinder DB.
+  mysql_db:
+    name:  cinder
+    state: present
+
+- name: Create Cinder DB users.
+  mysql_user:
+    name:       cinder
+    login_host: '{{ mysql_host }}'
+    password:   '{{ mysql_password }}'
+    priv:       cinder.*:ALL
+    state:      present
+    host:       '{{ item }}'
+  with_items:
+    - localhost
+    - '%'
+
+- name:         Populate Cinder DB.
+  changed_when: no
+  command:      cinder-manage db sync
+  become:       true
+  become_user:  cinder

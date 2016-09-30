@@ -1,0 +1,4 @@
+- name: Install Cinder package.
+  yum:
+    name:  openstack-cinder
+    state: present
