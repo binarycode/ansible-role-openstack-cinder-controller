@@ -1,1 +1,16 @@
 ---
+ip_address:
+
+mysql_host: controller
+mysql_password:
+
+rabbitmq_host: controller
+rabbitmq_user:
+rabbitmq_password:
+
+keystone_host: controller
+keystone_password:
+
+keystone_admin_password:
+
+region: RegionOne
