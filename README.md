@@ -33,9 +33,9 @@ RabbitMQ credentials.
 
 Keystone credentials for Cinder user.
 
-    keystone_admin_token:
+    keystone_admin_password:
 
-Keystone administration token.
+Password for admin Keystone user.
 
     region: RegionOne
 
