@@ -1,14 +1,12 @@
 ---
 - name: Create Cinder DB.
   mysql_db:
-    login_host: '{{ mysql_host }}'
     name:       cinder
     state:      present
 
 - name: Create Cinder DB users.
   mysql_user:
     name:       cinder
-    login_host: '{{ mysql_host }}'
     password:   '{{ mysql_password }}'
     priv:       cinder.*:ALL
     state:      present
